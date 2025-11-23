@@ -49,6 +49,7 @@ on fs
 
 on init
     start vendor.boot-qti
+    setprop prepdecrypt.setpatch true
 
 on boot
     setprop sys.usb.config adb
@@ -66,6 +67,9 @@ on property:twrp.modules.loaded=true
     start health-hal-2-1
     start vibratorfeature-hal-service
     umount /firmware
+
+on property:ro.crypto.state=encrypted && property:ro.boot.dynamic_partitions=true
+    start prepdecrypt.vendor
 
 on property:vendor.sys.listeners.registered=true
     start vendor.keymint-qti
