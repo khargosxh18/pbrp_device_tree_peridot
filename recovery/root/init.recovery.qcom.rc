@@ -72,4 +72,5 @@ on property:ro.crypto.state=encrypted && property:ro.boot.dynamic_partitions=tru
     start prepdecrypt.vendor
 
 on property:vendor.sys.listeners.registered=true
+    start vendor.ssgtzd
     start vendor.keymint-qti
