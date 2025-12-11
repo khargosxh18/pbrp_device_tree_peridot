@@ -51,6 +51,7 @@ if [ "$FOX_BUILD_DEVICE" = "$FDEVICE" ]; then
 	export FOX_DELETE_MAGISK_ADDON=1
 	export FOX_VARIANT="auto-dfe"
 	export FOX_USE_BUSYBOX_BINARY=1
+	export FOX_MAINTAINER_PATCH_VERSION="$(date +%Y%m%d%H%M)"
 else
 	echo "I: vendorsetup.sh skipped; device mismatch or environment issue."
 fi
