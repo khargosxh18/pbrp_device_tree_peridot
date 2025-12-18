@@ -89,3 +89,6 @@ OF_DISABLE_ORS_AUTO_REBOOT := 1
 
 # Set this to 1 to force the selection of f2fs when formatting data
 OF_FORCE_DATA_FORMAT_F2FS := 1
+
+# Set this to 1 to include an addon for removing factory reset protection (FRP)
+OF_ENABLE_FRP_ADDON := 1
