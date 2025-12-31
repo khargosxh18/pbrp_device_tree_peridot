@@ -15,6 +15,9 @@ for slot in _a _b; do
 	sleep 1
 done
 
+LOGMSG "Clearing previous DFE installation logs..."
+rm -rf /sdcard/neo_file_*
+
 LOGMSG "Setting instructions for next reboot..."
 echo "install /FFiles/DFE.zip" > /cache/recovery/openrecoveryscript
 
