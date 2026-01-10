@@ -28,7 +28,7 @@ $(call inherit-product, vendor/twrp/config/common.mk)
 $(call inherit-product, $(DEVICE_PATH)/fox_peridot.mk)
 
 PRODUCT_PACKAGES += \
-    bootctrl.xiaomi_sm8550.recovery \
+    bootctrl.xiaomi_sm8635.recovery \
     android.hardware.boot@1.2-impl-qti.recovery
 
 # API
