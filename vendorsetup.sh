@@ -40,20 +40,33 @@ if [ "$FOX_BUILD_DEVICE" = "$FDEVICE" ]; then
 # Review build flags with below links:
 # https://gitlab.com/OrangeFox/vendor/recovery/-/raw/fox_14.1/orangefox_build_vars.txt
 # https://gitlab.com/OrangeFox/bootable/Recovery/-/raw/fox_14.1/orangefox.mk
+
+	# A/B Partition
 	export FOX_VIRTUAL_AB_DEVICE=1
-	export FOX_VANILLA_BUILD=1
 	export FOX_RECOVERY_SYSTEM_PARTITION="/dev/block/mapper/system"
 	export FOX_RECOVERY_VENDOR_PARTITION="/dev/block/mapper/vendor"
+
+	# Compression Binaries & Tools
 	export FOX_USE_BASH_SHELL=1
 	export FOX_USE_NANO_EDITOR=1
+	export FOX_USE_TAR_BINARY=1
+	export FOX_USE_LZ4_BINARY=1
+	export FOX_USE_SED_BINARY=1
+	export FOX_USE_XZ_UTILS=1
+	export FOX_USE_ZSTD_BINARY=1
 	export FOX_DELETE_AROMAFM=1
 	export FOX_REMOVE_AAPT=1
+	export FOX_USE_BUSYBOX_BINARY=1
+	export FOX_USE_GREP_BINARY=1
+
+	# KernelSU Support
 	export FOX_DELETE_MAGISK_ADDON=1
 	export FOX_ENABLE_KERNELSU_SUPPORT=1
 	export FOX_ENABLE_KERNELSU_NEXT_SUPPORT=1
 	export FOX_ENABLE_SUKISU_SUPPORT=1
+
+	# Fox Settings
 	export FOX_VARIANT="crypto"
-	export FOX_USE_BUSYBOX_BINARY=1
 	export FOX_SETTINGS_ROOT_DIRECTORY="/persist"
 	export FOX_MAINTAINER_PATCH_VERSION="$(date +%Y%m%d%H%M)"
 	export FOX_ALLOW_EARLY_SETTINGS_LOAD=1
