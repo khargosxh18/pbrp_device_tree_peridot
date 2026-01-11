@@ -1,76 +1,53 @@
 #!/system/bin/sh
-#
-#	This file is part of the OrangeFox Recovery Project
-# 	Copyright (C) 2024-2025 The OrangeFox Recovery Project
-#
-#	OrangeFox is free software: you can redistribute it and/or modify
-#	it under the terms of the GNU General Public License as published by
-#	the Free Software Foundation, either version 3 of the License, or
-#	any later version.
-#
-#	OrangeFox is distributed in the hope that it will be useful,
-#	but WITHOUT ANY WARRANTY; without even the implied warranty of
-#	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#	GNU General Public License for more details.
-#
-# 	This software is released under GPL version 3 or any later version.
-#	See <http://www.gnu.org/licenses/>.
-#
-# 	Please maintain this if you use this script or any part of it
-#
 
-DEBUG=1;
+DEBUG=0
 [ "$DEBUG" = "1" ] && set -o xtrace;
-
-# $1=full string, $2=index number of the substring to fetch
-substring() {
-  echo $1 | cut -d ' ' -f $2;
-}
 
 LOGMSG() {
 	echo "I:$@" >> /tmp/recovery.log
 }
 
-isloaded() {
-	local f=$(lsmod | grep ^"$1");
-	local c=$(substring "$f" 3);
-	local c2=$(substring "$f" 4);
-	if  [ -n "$c2" ] || [ -n "$c" -a "$c" != "0" ]; then
-		echo "1";
-	else
-		echo "0";
-	fi
-}
-
 quit() {
 	LOGMSG "$@ is loaded";
-	exit 0;
 }
 
 load_drivers() {
-	local path1=/vendor/lib/modules/1.1;
-	local path2=/tmp/vendor/lib/modules;
-	local path3=/lib/modules;
-	local modules="adsp_loader_dlkm.ko focaltech_3683g.ko focaltech_touch.ko goodix_core.ko goodix_ts.ko nxp-nci.ko qti_battery_charger.ko xiaomi_touch.ko";
+	local path1=/lib/modules;
+	local path2=/vendor/lib/modules/1.1;
+	local modules="adsp_loader_dlkm focaltech_3683g focaltech_touch goodix_core goodix_ts gpr_dlkm \
+								nxp-nci panel_event_notifier pdr_interface pmic_glink q6_notifier_dlkm q6_pdr_dlkm \
+								qcom_glink qcom_glink_smem qcom_pil_info qcom_q6v5 qcom_q6v5_pas qcom_ramdump qcom_smd qcom_sysmon \
+								qmi_helpers qti_battery_charger rproc_qcom_common snd_event_dlkm spf_core_dlkm xiaomi_touch"
 
 	# loop through the modules
 	for i in $modules; do
 		# check whether the module is already loaded
-		f=$(isloaded "$i");
-		[ "$f" = "1" ] && quit "$i"; # module is already loaded - return
+		if lsmod | grep "^$i"; then
+			quit "$i"
+			continue
+		fi
 
 		# try to load the module
-		modprobe -d $path1 $i &> /dev/null;
-		[ "$(isloaded $i)" = "1" ] && quit "$i";
+		insmod "$path1/$i.ko"
+		if lsmod | grep "^$i"; then
+			quit "$i"
+			continue
+		fi
 
-		modprobe -d $path2 $i &> /dev/null;
-		[ "$(isloaded $i)" = "1" ] && quit "$i";
+		insmod "$path2/$i.ko"
+		if lsmod | grep "^$i"; then
+			quit "$i"
+			continue
+		fi
 
-		modprobe -d $path3 $i &> /dev/null;
-		[ "$(isloaded $i)" = "1" ] && quit "$i";
+		# module failed to load from all paths
+		LOGMSG "$i failed to load"
 	done
 }
 
-LOGMSG "- Running $0 on $(date)";
+SCRIPT_NAME="$(basename "$0")"
+
+LOGMSG "---$SCRIPT_NAME start---"
 load_drivers;
-exit 0;
+LOGMSG "---$SCRIPT_NAME end---"
+exit 0
