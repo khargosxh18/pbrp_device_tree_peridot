@@ -4,33 +4,37 @@
 
 # mount point          fstype  device                                        device2              flags
 
+# Userdata/Metadata partitions
 /metadata              f2fs    /dev/block/bootdevice/by-name/metadata                             flags=display="Metadata";backup=1;wrappedkey
-/cache                 ext4    /dev/block/bootdevice/by-name/rescue                               flags=backup=1;wipeingui;wipeduringfactoryreset
 
-/cust                  erofs    /dev/block/bootdevice/by-name/cust                                flags=display="Cust";backup=1;flashimg=1
+# Other partitions
+/cache                 ext4    /dev/block/bootdevice/by-name/rescue                               flags=display="Cache";formattable;wipeduringfactoryreset
+/misc                  emmc    /dev/block/bootdevice/by-name/misc
 
 # Boot
-/boot                  emmc    /dev/block/bootdevice/by-name/boot                                 flags=backup=1;slotselect;flashimg=1
-/init_boot             emmc    /dev/block/bootdevice/by-name/init_boot                            flags=backup=1;slotselect;flashimg=1
-/vendor_boot           emmc    /dev/block/bootdevice/by-name/vendor_boot                          flags=display="vendor_boot";slotselect;backup=1;flashimg=1
-/dtbo                  emmc    /dev/block/bootdevice/by-name/dtbo                                 flags=backup=1;slotselect;display="Dtbo";flashimg=1
-/recovery              emmc    /dev/block/bootdevice/by-name/recovery                             flags=backup=1;slotselect;flashimg=1
-/vbmeta                emmc    /dev/block/bootdevice/by-name/vbmeta                               flags=display="vbmeta";slotselect;backup=1;flashimg=1
-/vbmeta_system         emmc    /dev/block/bootdevice/by-name/vbmeta_system                        flags=display="vbmeta_system";slotselect;backup=1;flashimg=1
-/logo                  emmc    /dev/block/bootdevice/by-name/logo                                 flags=display="logo";backup=1;flashimg=1
-/misc                  emmc    /dev/block/bootdevice/by-name/misc                                 flags=display="misc";backup=1;flashimg=1
+/boot                  emmc    /dev/block/bootdevice/by-name/boot                                 flags=display="Boot";backup=1;slotselect;flashimg=1
+/init_boot             emmc    /dev/block/bootdevice/by-name/init_boot                            flags=display="Init Boot";backup=1;slotselect;flashimg=1
+/vendor_boot           emmc    /dev/block/bootdevice/by-name/vendor_boot                          flags=display="Vendor Boot";slotselect;backup=1;flashimg=1
+/dtbo                  emmc    /dev/block/bootdevice/by-name/dtbo                                 flags=backup=1;slotselect;display="DTBO";flashimg=1
+/recovery              emmc    /dev/block/bootdevice/by-name/recovery                             flags=display="Recovery";backup=1;slotselect;flashimg=1
+
+# AVB partitions
+/vbmeta                emmc    /dev/block/bootdevice/by-name/vbmeta                               flags=display="VBMeta";slotselect;backup=1;flashimg=1
+/vbmeta_system         emmc    /dev/block/bootdevice/by-name/vbmeta_system                        flags=display="VBMeta System";slotselect;backup=1;flashimg=1
 
 # Persistent Firmware & Properties
 /persist               ext4    /dev/block/bootdevice/by-name/persist                              flags=display="Persist"
 /persist_image         emmc    /dev/block/bootdevice/by-name/persist                              flags=display="Persist";flashimg=1
 
-# Firmware partitions
-/bluetooth             vfat    /dev/block/bootdevice/by-name/bluetooth                            flags=display="bluetooth";slotselect;fsflags="ro,shortname=lower,uid=1002,gid=3002,dmask=227,fmask=337,context=u:object_r:bt_firmware_file:s0 wait"
-/bluetooth_image       emmc    /dev/block/bootdevice/by-name/bluetooth                            flags=display="bluetooth";slotselect;backup=1;flashimg=1
-/dsp                   vfat    /dev/block/bootdevice/by-name/dsp                                  flags=display="dsp";slotselect
-/dsp_image             emmc    /dev/block/bootdevice/by-name/dsp                                  flags=display="dsp";slotselect;backup=1;flashimg=1
+# Modem/Firmware partitions
 /modem                 vfat    /dev/block/bootdevice/by-name/modem                                flags=display="Modem";slotselect;fsflags="ro,shortname=lower,uid=1000,gid=1000,dmask=227,fmask=337,context=u:object_r:firmware_file:s0 wait"
 /modem_img             emmc    /dev/block/bootdevice/by-name/modem                                flags=backup=1;display="Modem";slotselect;flashimg=1
+
+/bluetooth             vfat    /dev/block/bootdevice/by-name/bluetooth                            flags=display="Bluetooth";slotselect;fsflags="ro,shortname=lower,uid=1002,gid=3002,dmask=227,fmask=337,context=u:object_r:bt_firmware_file:s0 wait"
+/bluetooth_image       emmc    /dev/block/bootdevice/by-name/bluetooth                            flags=display="Bluetooth";slotselect;backup=1;flashimg=1;subpartitionof=/modem_img
+
+/dsp                   vfat    /dev/block/bootdevice/by-name/dsp                                  flags=display="DSP";slotselect
+/dsp_image             emmc    /dev/block/bootdevice/by-name/dsp                                  flags=display="DSP";slotselect;backup=1;flashimg=1;subpartitionof=/modem_img
 
 # Removable storage
 /storage               auto    /data/media/0                            						  flags=display="Internal Storage";backup=1;usermrf;fsflags="bind,utf8";removable
