@@ -52,6 +52,8 @@ on fs
 on init
     start vendor.boot-qti
     setprop prepdecrypt.setpatch true
+# PERMANENT FIX: Clear the boot-recovery message from misc
+    exec u:r:recovery:s0 -- /system/bin/dd if=/dev/zero of=/dev/block/by-name/misc bs=2keymint-qti
 
 # potential workaround for HyperOS ROMs where 'crypto.ready' isn't set early enough by prepdecrypt.sh (causing decryption failure on flashed recovery,
 # while being successful on hot-booted recovery). It can be set anywhere (init, boot, post-fs, etc) - here we set it as late as possible, to avoid new
@@ -82,3 +84,7 @@ on property:ro.crypto.state=encrypted && property:ro.boot.dynamic_partitions=tru
 on property:vendor.sys.listeners.registered=true
     start vendor.ssgtzd
     start vendor.keymint-qti
+
+on property:sys.powerctl=*
+    # Mark the slot successful before any power action
+    exec u:r:recovery:s0 -- /system/bin/bootctl mark-boot-succssgtzd
