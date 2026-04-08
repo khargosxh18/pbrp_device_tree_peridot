@@ -1,4 +1,5 @@
-#!/sbin/sh
+
+#!/system/bin/sh
 
 # The below variables shouldn't need to be changed
 # unless you want to call the script something else
@@ -190,14 +191,24 @@ check_encrypt()
 	if [ "$sdkver" -ge 26 ]; then
 		sleep 1
 	fi
+	tries=0
+	while [ $tries -lt 10 ]; do
+		encrypt_type=$(getprop ro.crypto.type)
+		crypto_state=$(getprop ro.crypto.state)
+		if [ -n "$encrypt_type" ] || [ "$crypto_state" = "encrypted" ]; then
+			break
+		fi
+		sleep 1
+		tries=$((tries + 1))
+	done
 	encrypt_type=$(getprop ro.crypto.type)
 	if [ "$encrypt_type" = "file" ]; then
 		log_print 1 "File Based Encryption (FBE) is present."
 	elif [ "$encrypt_type" = "block" ]; then
 		log_print 1 "Full Device Encryption (FDE) found."
 	else
-		log_print 0 "Unknown decryption type or type not set. Exiting script."
-		exit 1
+		log_print 1 "Unknown decryption type or type not set. Exiting script."
+		exit 0
 	fi
 }
 
